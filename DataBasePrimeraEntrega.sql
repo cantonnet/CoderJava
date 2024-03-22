@@ -22,3 +22,5 @@ CREATE TABLE IF NOT EXISTS Venta (
     total DOUBLE NOT NULL,
     FOREIGN KEY (clienteId) REFERENCES Cliente(id)
 );
+
+INSERT INTO Cliente (nombre, email, telefono) VALUES ('Juan Perez', 'juan.perez@example.com', '1234567890');
