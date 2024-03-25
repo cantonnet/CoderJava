@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 
 import com.coderhouse.entidades.Cliente;
 import com.coderhouse.entidades.Producto;
@@ -43,7 +44,7 @@ public class JavaDataBaseController {
 		}
 	}
 
-	// CRUD
+	// CRUD CLIENTE
 	public void mostrarClientes() {
 		Statement statement = null;
 		ResultSet resultSet = null;
@@ -136,5 +137,274 @@ public class JavaDataBaseController {
 			}
 		}
 
+	}
+	
+	public void elimnarCliente(Integer id)
+	{
+		PreparedStatement statement = null;
+		try {
+			String query = "DELETE FROM Cliente WHERE id = ?";
+					statement = connection.prepareStatement(query);
+					statement.setInt(1, id);
+					
+					int filasAfectadas = statement.executeUpdate();
+					if (filasAfectadas > 0) {
+						System.out.println("Cliente " + id + " eliminado correctamente");
+					} else {
+						System.out.println("No se encontró el cliente con ID: " + id);
+						System.out.println("No se pudo eliminar ");
+					}
+			
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		} finally {
+			try {
+				if (statement != null) {
+					statement.close();
+				}
+			} catch (SQLException e) {
+				System.err.println("Error al cerrar el statement: " + e.getMessage());
+			}
+		}
+	}
+	
+	// CRUD PRODUCTO
+	
+	public void insertarProducto(Producto producto) {
+	    PreparedStatement statement = null;
+	    String query = "INSERT INTO Producto(nombre, precio, stock) VALUES (?, ?, ?)";
+	    try {
+	        statement = connection.prepareStatement(query);
+	        statement.setString(1, producto.getNombre());
+	        statement.setDouble(2, producto.getPrecio());
+	        statement.setInt(3, producto.getStock());
+	        
+	        int rowsInserted = statement.executeUpdate();
+	        if (rowsInserted > 0) {
+	            System.out.println("El producto fue insertado exitosamente");
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("No se pudo insertar producto: " + e.getMessage());
+	    } finally {
+	        if (statement != null) {
+	            try {
+	                statement.close();
+	            } catch (SQLException e) {
+	                System.err.println("Error al cerrar el statement: " + e.getMessage());
+	            }
+	        }
+	    }
+	}
+	
+	public void modificarProducto(int id, String nuevoNombre, double nuevoPrecio, int nuevoStock) {
+	    PreparedStatement statement = null;
+	    try {
+	        String query = "UPDATE Producto SET nombre = ?, precio = ?, stock = ? WHERE id = ?";
+	        statement = connection.prepareStatement(query);
+	        statement.setString(1, nuevoNombre);
+	        statement.setDouble(2, nuevoPrecio);
+	        statement.setInt(3, nuevoStock);
+	        statement.setInt(4, id);
+	        
+	        int filasAfectadas = statement.executeUpdate();
+	        if (filasAfectadas > 0) {
+	            System.out.println("Producto actualizado correctamente");
+	        } else {
+	            System.out.println("No se encontró el producto con ID: " + id);
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("No se pudo actualizar producto: " + e.getMessage());
+	    } finally {
+	        if (statement != null) {
+	            try {
+	                statement.close();
+	            } catch (SQLException e) {
+	                System.err.println("Error al cerrar el statement: " + e.getMessage());
+	            }
+	        }
+	    }
+	}
+	
+	public void eliminarProducto(int id) {
+	    PreparedStatement statement = null;
+	    try {
+	        String query = "DELETE FROM Producto WHERE id = ?";
+	        statement = connection.prepareStatement(query);
+	        statement.setInt(1, id);
+
+	        int filasAfectadas = statement.executeUpdate();
+	        if (filasAfectadas > 0) {
+	            System.out.println("Producto eliminado correctamente.");
+	        } else {
+	            System.out.println("No se encontró el producto con ID: " + id);
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("No se pudo eliminar el producto: " + e.getMessage());
+	    } finally {
+	        if (statement != null) {
+	            try {
+	                statement.close();
+	            } catch (SQLException e) {
+	                System.err.println("Error al cerrar el statement: " + e.getMessage());
+	            }
+	        }
+	    }
+	}
+	
+	public void mostrarProductos() {
+	    Statement statement = null;
+	    ResultSet resultSet = null;
+
+	    String query = "SELECT id, nombre, precio, stock FROM Producto";
+	    try {
+	        statement = connection.createStatement();
+	        resultSet = statement.executeQuery(query);
+
+	        while (resultSet.next()) {
+	            int id = resultSet.getInt("id");
+	            String nombre = resultSet.getString("nombre");
+	            double precio = resultSet.getDouble("precio");
+	            int stock = resultSet.getInt("stock");
+
+	            System.out.println("Producto ID: " + id + ", Nombre: " + nombre + ", Precio: $" + precio + ", Stock: " + stock);
+	        }
+	    } catch (SQLException e) {
+	        System.err.println(e.getMessage());
+	    } finally {
+	        if (resultSet != null) {
+	            try {
+	                resultSet.close();
+	            } catch (SQLException e) {
+	                System.err.println("Error al cerrar el resultSet: " + e.getMessage());
+	            }
+	        }
+	        if (statement != null) {
+	            try {
+	                statement.close();
+	            } catch (SQLException e) {
+	                System.err.println("Error al cerrar el statement: " + e.getMessage());
+	            }
+	        }
+	    }
+	}
+	
+	// CRUD VENTA
+	
+	public void insertarVenta(Venta venta) {
+	    PreparedStatement statement = null;
+	    String query = "INSERT INTO Venta(clienteId, fecha, total) VALUES (?, ?, ?)";
+	    try {
+	        statement = connection.prepareStatement(query);
+	        statement.setInt(1, venta.getClienteId());
+	        statement.setDate(2, new java.sql.Date(venta.getFecha().getTime()));
+	        statement.setDouble(3, venta.getTotal()); // Asumiendo que calculas el total antes de llamar a este método
+	        
+	        int rowsInserted = statement.executeUpdate();
+	        if (rowsInserted > 0) {
+	            System.out.println("La venta fue insertada exitosamente");
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("No se pudo insertar venta: " + e.getMessage());
+	    } finally {
+	        if (statement != null) {
+	            try {
+	                statement.close();
+	            } catch (SQLException e) {
+	                System.err.println("Error al cerrar el statement: " + e.getMessage());
+	            }
+	        }
+	    }
+	}
+	
+	public void modificarVenta(int id, int nuevoClienteId, Date nuevaFecha, double nuevoTotal) {
+	    PreparedStatement statement = null;
+	    try {
+	        String query = "UPDATE Venta SET clienteId = ?, fecha = ?, total = ? WHERE id = ?";
+	        statement = connection.prepareStatement(query);
+	        statement.setInt(1, nuevoClienteId);
+	        statement.setDate(2, new java.sql.Date(nuevaFecha.getTime()));
+	        statement.setDouble(3, nuevoTotal);
+	        statement.setInt(4, id);
+	        
+	        int filasAfectadas = statement.executeUpdate();
+	        if (filasAfectadas > 0) {
+	            System.out.println("Venta actualizada correctamente");
+	        } else {
+	            System.out.println("No se encontró la venta con ID: " + id);
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("No se pudo actualizar la venta: " + e.getMessage());
+	    } finally {
+	        if (statement != null) {
+	            try {
+	                statement.close();
+	            } catch (SQLException e) {
+	                System.err.println("Error al cerrar el statement: " + e.getMessage());
+	            }
+	        }
+	    }
+	}
+	
+	public void eliminarVenta(int id) {
+	    PreparedStatement statement = null;
+	    try {
+	        String query = "DELETE FROM Venta WHERE id = ?";
+	        statement = connection.prepareStatement(query);
+	        statement.setInt(1, id);
+
+	        int filasAfectadas = statement.executeUpdate();
+	        if (filasAfectadas > 0) {
+	            System.out.println("Venta eliminada correctamente.");
+	        } else {
+	            System.out.println("No se encontró la venta con ID: " + id);
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("No se pudo eliminar la venta: " + e.getMessage());
+	    } finally {
+	        if (statement != null) {
+	            try {
+	                statement.close();
+	            } catch (SQLException e) {
+	                System.err.println("Error al cerrar el statement: " + e.getMessage());
+	            }
+	        }
+	    }
+	}
+	
+	public void mostrarVentas() {
+	    Statement statement = null;
+	    ResultSet resultSet = null;
+
+	    String query = "SELECT id, clienteId, fecha, total FROM Venta";
+	    try {
+	        statement = connection.createStatement();
+	        resultSet = statement.executeQuery(query);
+
+	        while (resultSet.next()) {
+	            int id = resultSet.getInt("id");
+	            int clienteId = resultSet.getInt("clienteId");
+	            Date fecha = resultSet.getDate("fecha");
+	            double total = resultSet.getDouble("total");
+
+	            System.out.println("Venta ID: " + id + ", Cliente ID: " + clienteId + ", Fecha: " + fecha + ", Total: $" + total);
+	        }
+	    } catch (SQLException e) {
+	        System.err.println(e.getMessage());
+	    } finally {
+	        if (resultSet != null) {
+	            try {
+	                resultSet.close();
+	            } catch (SQLException e) {
+	                System.err.println("Error al cerrar el resultSet: " + e.getMessage());
+	            }
+	        }
+	        if (statement != null) {
+	            try {
+	                statement.close();
+	            } catch (SQLException e) {
+	                System.err.println("Error al cerrar el statement: " + e.getMessage());
+	            }
+	        }
+	    }
 	}
 }

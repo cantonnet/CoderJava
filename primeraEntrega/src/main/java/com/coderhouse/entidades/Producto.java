@@ -20,8 +20,7 @@ public class Producto {
     private int stock;
 
     // Constructor
-    public Producto(int id, String nombre, double precio, int stock) {
-        this.id = id;
+    public Producto(String nombre, double precio, int stock) {
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;
@@ -59,4 +58,6 @@ public class Producto {
     public void setStock(int stock) {
         this.stock = stock;
     }
+    
+    
 }

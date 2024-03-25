@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
 
 @Entity
 @Table(name = "Venta")
@@ -21,11 +22,11 @@ public class Venta {
     private Date fecha;
 	@Column(name="total")
     private double total;
+	@OneToMany(mappedBy = "venta")
     private List<Producto> productos;
 
     // Constructor
-    public Venta(int id, int clienteId, Date fecha) {
-        this.id = id;
+    public Venta(int clienteId, Date fecha) {
         this.clienteId = clienteId;
         this.fecha = fecha;
         this.productos = new ArrayList<>();
