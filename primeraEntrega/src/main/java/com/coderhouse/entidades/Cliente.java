@@ -21,6 +21,11 @@ public class Cliente {
 
     public Cliente() {}
     // Constructor, getters y setters
+    public Cliente(String nombre, String email, String telefono) {
+        this.nombre = nombre;
+        this.email = email;
+        this.telefono = telefono;
+    }
 
 	public int getId() {
 		return id;
