@@ -28,17 +28,32 @@ public class Cliente {
     @Column(name="fechadenacimiento")
     private Date fechaDeNacimiento;
 	
-    public Integer getdni() {
-		return dni;
-	}
-	public void setdni(Integer dni) {
+public Cliente() {}
+    
+    public Cliente(String nombre, String apellido) {
+    	this.nombre = nombre;
+		this.apellido = apellido;
+    }
+    
+	public Cliente(Integer id, Integer dni, String nombre, String apellido, Date fechaDeNacimiento) {
+		super();
+		this.id = id;
 		this.dni = dni;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.fechaDeNacimiento = fechaDeNacimiento;
 	}
-    public Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	public Integer getdni() {
+		return dni;
+	}
+	public void setdni(Integer dni) {
+		this.dni = dni;
 	}
 	public String getNombre() {
 		return nombre;
@@ -58,20 +73,4 @@ public class Cliente {
 	public void setFechaDeNacimiento(Date fechaDeNacimiento) {
 		this.fechaDeNacimiento = fechaDeNacimiento;
 	}
-	public Cliente() {
-    }
-
-	public Cliente(Integer id,Integer dni, String nombre, String apellido, Date fechaDeNacimiento) {
-		this.id = id;
-		this.dni = dni;
-		this.nombre = nombre;
-		this.apellido = apellido;
-		this.fechaDeNacimiento = fechaDeNacimiento;
-	}
-    
-    
-    
-    
-    
-    
 }
