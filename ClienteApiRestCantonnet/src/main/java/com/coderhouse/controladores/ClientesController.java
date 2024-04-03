@@ -31,8 +31,8 @@ public class ClientesController {
 		}
 	}
 	
-	@GetMapping(value="/{id}", produces = { MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Cliente> mostrarClientePorDNI(@PathVariable("id") Integer dni) {
+	@GetMapping(value="/{dni}", produces = { MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<Cliente> mostrarClientePorDNI(@PathVariable("dni") Integer dni) {
 		try {
 			Cliente cliente = clienteRepository.findById(dni).orElse(null);
 	        if (cliente != null) {
@@ -48,8 +48,9 @@ public class ClientesController {
 	
 	@PostMapping(value = "/agregar", consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Cliente> gregarCliente(@RequestBody Cliente cliente) {
-		clienteRepository.save(cliente);
-		return new ResponseEntity<>(cliente,HttpStatus.CREATED);
+		
+	            clienteRepository.save(cliente);
+	        	return new ResponseEntity<>(cliente,HttpStatus.CREATED);
 	}
 	
 

@@ -1,6 +1,8 @@
 package com.coderhouse.modelo;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 
@@ -13,18 +15,29 @@ import jakarta.persistence.Column;
 public class Cliente {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id")
+    private Integer id;
+	
     @Column(name="dni")
-    private int id;
+    private Integer dni;
     @Column(name="nombre")
     private String nombre;
     @Column(name="apellido")
     private String apellido;
     @Column(name="fechadenacimiento")
     private Date fechaDeNacimiento;
-	public int getId() {
+	
+    public Integer getdni() {
+		return dni;
+	}
+	public void setdni(Integer dni) {
+		this.dni = dni;
+	}
+    public Integer getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getNombre() {
@@ -48,9 +61,9 @@ public class Cliente {
 	public Cliente() {
     }
 
-	public Cliente(int id, String nombre, String apellido, Date fechaDeNacimiento) {
-		super();
+	public Cliente(Integer id,Integer dni, String nombre, String apellido, Date fechaDeNacimiento) {
 		this.id = id;
+		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.fechaDeNacimiento = fechaDeNacimiento;
