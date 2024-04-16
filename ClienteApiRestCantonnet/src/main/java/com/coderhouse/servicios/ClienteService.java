@@ -1,7 +1,7 @@
 package com.coderhouse.servicios;
 
-import java.sql.Date;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class ClienteService {
 	
 	public int calcularEdadDelCliente(Cliente cliente) {
 		
-	    java.util.Date fechaNacimiento = cliente.getFechaDeNacimiento();
+	    Date fechaNacimiento = cliente.getFechaDeNacimiento();
 	    Calendar fechaActual = Calendar.getInstance();
 	    Calendar fechaNac = Calendar.getInstance();
 	    fechaNac.setTime(fechaNacimiento);
