@@ -5,15 +5,21 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -22,40 +28,45 @@ import jakarta.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "clientes")
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idCliente")
 public class Cliente implements Serializable{
-
-	@Schema(description = "Id del cliente", example = "1")
 	@Id
-	@Column(name = "id_cliente")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Schema(description = "Id del cliente", example = "1")
+    private int idCliente;
+    
 	@Schema(description = "Nombre del cliente", requiredMode = Schema.RequiredMode.REQUIRED, example = "Pedro")
-	@Column(name = "nombre")
-	private String nombre;
+    @Column(name = "nombre")
+    private String nombre;
+    
 	@Schema(description = "Apellido del cliente", requiredMode = Schema.RequiredMode.REQUIRED, example = "Ferraro")
-	@Column(name = "apellido")
-	private String apellido;
+    @Column(name = "apellido")
+    private String apellido;
+    
 	@Schema(description = "DNI del cliente", requiredMode = Schema.RequiredMode.REQUIRED, example = "999685999")
-	@Column(name = "dni")
-	private String dni;
-    /*@Column(name="fecha_nacimiento")
-    private Date fechaDeNacimiento;*/
+    @Column(name = "dni")
+    private String dni;
+    
+ // Relación con Venta
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @JsonManagedReference // Indica que esta es la parte "administrada" de la relación
+    private List<Venta> ventas;
 
-	@JsonManagedReference
-	@OneToMany(mappedBy = "cliente")
-	private List<Producto> productos;
-	
-	
-	public Cliente() {
-		super();
+	public List<Venta> getVentas() {
+		return ventas;
 	}
 
-	public int getId() {
-		return id;
+	public void setVentas(List<Venta> ventas) {
+		this.ventas = ventas;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public int getIdCliente() {
+		return idCliente;
+	}
+
+	public void setIdCliente(int idCliente) {
+		this.idCliente = idCliente;
 	}
 
 	public String getNombre() {
@@ -81,13 +92,8 @@ public class Cliente implements Serializable{
 	public void setDni(String dni) {
 		this.dni = dni;
 	}
-
-	public List<Producto> getProductos() {
-		return productos;
-	}
-
-	public void setProductos(List<Producto> productos) {
-		this.productos = productos;
-	}
-	
+    
+    // Getters and setters
+    
+    
 }

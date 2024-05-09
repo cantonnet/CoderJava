@@ -25,96 +25,59 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class VentaController {
 	
 	@Autowired
-	private VentaService ventaService;
+    private VentaService ventaService;
+    
 	
 	// Retorna un listado de todas las ventas.
-	@Operation(summary = "Desplegar listado de ventas")
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Listado de ventas desplegado con exito", content = {
-				@Content(mediaType = "application/json", schema = @Schema(implementation = Venta.class))}),
-		@ApiResponse(responseCode = "500", description = "Error 500", content = @Content)})
-	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Venta>> listarVentas() {
-		try {
-			List<Venta> ventas = ventaService.listarVentas();
-			return new ResponseEntity<>(ventas, HttpStatus.OK);
-		} catch(Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+		@Operation(summary = "Desplegar listado de ventas")
+		@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Listado de ventas desplegado con exito", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Venta.class))}),
+			@ApiResponse(responseCode = "500", description = "Error 500", content = @Content)})
+		@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Venta>> getAllVentas() {
+        List<Venta> ventas = ventaService.getAllVentas();
+        return new ResponseEntity<>(ventas, HttpStatus.OK);
+    }
+    
+		// Retorna una venta específica según su ID.
+		@Operation(summary = "Obtener ventas por su ID")
+		@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Venta encontrada!", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Venta.class))}),
+			@ApiResponse(responseCode = "404", description = "Venta no se encuentra o no existe", content = @Content)})
+    @GetMapping("/{id}")
+    public ResponseEntity<Venta> getVentaById(@PathVariable("id") int id) {
+        Venta venta = ventaService.getVentaById(id);
+        if (venta != null) {
+            return new ResponseEntity<>(venta, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    
+		// Crea una nueva venta con los datos proporcionados.
+		@Operation(summary = "Crear una nueva venta")
+		@ApiResponses(value = {
+			    @ApiResponse(responseCode = "201", description = "Venta creada correctamente", content = {
+			            @Content(mediaType = "application/json", schema = @Schema(implementation = Venta.class))}),
+			    @ApiResponse(responseCode = "500", description = "Error 500", content = @Content)})
+    @PostMapping("/save")
+    public ResponseEntity<Venta> saveVenta(@RequestBody Venta venta) {
+        Venta savedVenta = ventaService.saveVenta(venta);
+        return new ResponseEntity<>(savedVenta, HttpStatus.CREATED);
+    }
+    
+		// Elimina una venta existente según su ID.
+		@Operation(summary = "Eliminar venta existente")
+		@ApiResponses(value = {
+			@ApiResponse(responseCode = "204", description = "Venta eliminada con exito", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Venta.class))}),
+			@ApiResponse(responseCode = "404", description = "Venta no se encuentra o no existe", content = @Content)})
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteVenta(@PathVariable("id") int id) {
+        ventaService.deleteVenta(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 	
-	// Retorna una venta específica según su ID.
-	@Operation(summary = "Obtener ventas por su ID")
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Venta encontrada!", content = {
-				@Content(mediaType = "application/json", schema = @Schema(implementation = Venta.class))}),
-		@ApiResponse(responseCode = "404", description = "Venta no se encuentra o no existe", content = @Content)})
-	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> mostrarVentaPorId(@PathVariable int id) {
-		try {
-			Venta venta = ventaService.mostrarVentaPorId(id);
-			if(venta != null) {
-				return new ResponseEntity<>(venta, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-		} catch(Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	// Crea una nueva venta con los datos proporcionados.
-	@Operation(summary = "Crear una nueva venta")
-	@ApiResponses(value = {
-	    @ApiResponse(responseCode = "201", description = "Venta creada correctamente", content = {
-	            @Content(mediaType = "application/json", schema = @Schema(implementation = Venta.class))}),
-	    @ApiResponse(responseCode = "500", description = "Error 500", content = @Content)})
-	@PostMapping(value = "/crear", consumes = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Venta> agregarVenta(
-			@RequestParam("clienteId") String clienteIdStr,
-	        @RequestParam("productoId") String productoIdStr,
-	        @RequestParam("cantidad") String cantidadStr) {
-	    try {
-	    	int clienteId = Integer.parseInt(clienteIdStr);
-	        int productoId = Integer.parseInt(productoIdStr);
-	        int cantidad = Integer.parseInt(cantidadStr);
-	        Venta hacerVenta = ventaService.crearVenta(clienteId, productoId, cantidad);
-	        return new ResponseEntity<>(hacerVenta, HttpStatus.CREATED);
-	    } catch (Exception e) {
-	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
-	}
-	
-	// Agrega una nueva venta con los datos proporcionados en el cuerpo de body.
-	@Operation(summary = "Agregar nueva venta")
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "201", description = "venta agregada!", content = {
-				@Content(mediaType = "application/json", schema = @Schema(implementation = Venta.class))}),
-		@ApiResponse(responseCode = "500", description = "Error 500", content = @Content)})
-	@PostMapping(value = "/agregar", consumes = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Venta> agregarVenta(@RequestBody Venta venta) {
-		try {
-			Venta hacerVenta = ventaService.agregarVenta(venta);
-			return new ResponseEntity<>(hacerVenta, HttpStatus.CREATED);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	// Elimina una venta existente según su ID.
-	@Operation(summary = "Eliminar venta existente")
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "204", description = "Venta eliminada con exito", content = {
-				@Content(mediaType = "application/json", schema = @Schema(implementation = Venta.class))}),
-		@ApiResponse(responseCode = "404", description = "Venta no se encuentra o no existe", content = @Content)})
-	@DeleteMapping(value = "/{id}/eliminar", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Void> eliminarVentaPorId(@PathVariable("id") int id) {
-		try {
-			ventaService.eliminarVentaPorId(id);
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} catch(EmptyResultDataAccessException e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 }

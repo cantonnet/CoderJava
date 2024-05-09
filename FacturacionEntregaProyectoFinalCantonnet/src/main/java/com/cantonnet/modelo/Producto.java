@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -19,47 +21,35 @@ import jakarta.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "productos")
-public class Producto implements Serializable{
-
-	@Schema(description = "Id del producto", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+public class Producto {
 	@Id
-	@Column(name = "id_producto")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Schema(description = "Id del producto", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    private int idProducto;
 	@Schema(description = "Nombre del producto", requiredMode = Schema.RequiredMode.REQUIRED, example = "Mantecol")
-	@Column(name = "nombre_producto")
-	private String nombreProducto;
+    @Column(name = "nombre_producto")
+    private String nombreProducto;
 	@Schema(description = "Precio del producto", requiredMode = Schema.RequiredMode.REQUIRED, example = "100.0")
-	@Column(name = "precio")
-	private double precio;
+    @Column(name = "precio")
+    private Double precio;
 	@Schema(description = "Stock del producto", requiredMode = Schema.RequiredMode.REQUIRED, example = "50")
-	@Column(name = "stock")
-	private int stock;
+    @Column(name = "stock")
+    private Integer stock;
 	@Schema(description = "Cantidad que lleva el cliente", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-	@Column(name = "cantidad")
-	private int cantidad;
+    @Column(name = "cantidad")
+    private Integer cantidad;
+    
+    @ManyToOne
+    @JoinColumn(name = "id_venta")
+    @JsonIgnore
+    private Venta venta;
 
-	@Schema(description = "Id del cliente que realiza la venta del producto")
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "id_cliente")
-	private Cliente cliente;
-
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "id_venta")
-	private Venta venta;
-
-	public Producto() {
-		super();
+	public int getIdProducto() {
+		return idProducto;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
+	public void setIdProducto(int idProducto) {
+		this.idProducto = idProducto;
 	}
 
 	public String getNombreProducto() {
@@ -70,37 +60,30 @@ public class Producto implements Serializable{
 		this.nombreProducto = nombreProducto;
 	}
 
-	public double getPrecio() {
+	public Double getPrecio() {
 		return precio;
 	}
 
-	public void setPrecio(double precio) {
+	public void setPrecio(Double precio) {
 		this.precio = precio;
 	}
 
-	public int getStock() {
+	public Integer getStock() {
 		return stock;
 	}
 
-	public void setStock(int stock) {
+	public void setStock(Integer stock) {
 		this.stock = stock;
 	}
 
-	public int getCantidad() {
+	public Integer getCantidad() {
 		return cantidad;
 	}
 
-	public void setCantidad(int cantidad) {
+	public void setCantidad(Integer cantidad) {
 		this.cantidad = cantidad;
 	}
-
-	public Cliente getCliente() {
-		return cliente;
-	}
-
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
+	
 
 	public Venta getVenta() {
 		return venta;
@@ -109,5 +92,8 @@ public class Producto implements Serializable{
 	public void setVenta(Venta venta) {
 		this.venta = venta;
 	}
-
+    
+    // Getters and setters
+    
+    
 }
