@@ -63,3 +63,4 @@ INSERT INTO productos (nombre_producto, precio, stock, cantidad, id_cliente, id_
 ('QUeso', 140.0, 15, 1, 1, 1),
 ('Cepillo de dientes', 115.5, 20, 1, 2, 2),
 ('Pasta dental', 130.0, 25, 1, 2, 2);
+
