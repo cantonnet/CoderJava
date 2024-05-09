@@ -88,52 +88,6 @@
 			"response": []
 		},
 		{
-			"name": "Update data Cliente",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful PUT request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
-							"});",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"nombre\": \"Sancho\",\n  \"apellido\": \"Panza\",\n  \"dni\": \"92222229\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/clientes/2/editar",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"clientes",
-						"2",
-						"editar"
-					]
-				},
-				"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
-			},
-			"response": []
-		},
-		{
 			"name": "Delete data Cliente",
 			"event": [
 				{
@@ -284,110 +238,6 @@
 			"response": []
 		},
 		{
-			"name": "Post data crearVenta",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful POST request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-							"});",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"clienteId\": 3,\n    \"productoId\": 5,\n    \"cantidad\": 2\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/ventas/crear",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"ventas",
-						"crear"
-					]
-				},
-				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-			},
-			"response": []
-		},
-		{
-			"name": "Post data crearVenta2",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful POST request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-							"});",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"apellido\": \"Marcus\",\n  \"dni\": 654987426,\n  \"nombre\": \"Alexius\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/ventas/crear?clienteId=3&productoId=5&cantidad=1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"ventas",
-						"crear"
-					],
-					"query": [
-						{
-							"key": "clienteId",
-							"value": "3"
-						},
-						{
-							"key": "productoId",
-							"value": "5"
-						},
-						{
-							"key": "cantidad",
-							"value": "1"
-						}
-					]
-				},
-				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-			},
-			"response": []
-		},
-		{
 			"name": "Post data agregarVenta",
 			"event": [
 				{
@@ -409,7 +259,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"apellido\": \"Marcus\",\n  \"dni\": 654987426,\n  \"nombre\": \"Alexius\"\n}",
+					"raw": "{\n  \"cliente\": {\n    \"idCliente\": 1\n  },\n  \"productos\": [\n    {\n      \"idProducto\": 4,\n      \"cantidad\": 2\n    },\n    {\n      \"idProducto\": 4,\n      \"cantidad\": 1\n    }\n  ],\n  \"totalProductos\": 3, \n  \"totalVenta\": 100.0 \n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -417,15 +267,15 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/productos/agregar",
+					"raw": "http://localhost:8080/ventas/save",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"productos",
-						"agregar"
+						"ventas",
+						"save"
 					]
 				},
 				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
