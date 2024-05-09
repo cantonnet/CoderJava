@@ -34,6 +34,7 @@ public class ComprobanteService {
         return comprobanteRepository.findById(id).orElse(null);
     }
     
+    //establece los datos que vienen desde VentaService saveVenta
     public Venta saveComprobante(Venta venta, Double Total, Cliente cliente, LocalDateTime date) {
     	Comprobante comprobante = new Comprobante();
     	comprobante.setTotal(Total);

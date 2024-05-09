@@ -93,7 +93,5 @@ public class Cliente implements Serializable{
 		this.dni = dni;
 	}
     
-    // Getters and setters
-    
     
 }

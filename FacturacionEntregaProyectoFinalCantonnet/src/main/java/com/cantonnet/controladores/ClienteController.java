@@ -70,7 +70,7 @@ public class ClienteController {
 		@ApiResponse(responseCode = "201", description = "Cliente agregado!", content = {
 				@Content(mediaType = "application/json", schema = @Schema(implementation = Cliente.class))}),
 		@ApiResponse(responseCode = "500", description = "Error 500", content = @Content)})
-    @PostMapping
+    @PostMapping("/agregar")
     public ResponseEntity<Cliente> saveCliente(@RequestBody Cliente cliente) {
         Cliente savedCliente = clienteService.saveCliente(cliente);
         return new ResponseEntity<>(savedCliente, HttpStatus.CREATED);

@@ -52,6 +52,7 @@ public class VentaService {
         return ventaRepository.findById(id).orElse(null);
     }
     
+    // metodo para crear una venta desde PostMapping de ClienteController
     public Venta saveVenta(Venta venta) {
     	// Obtener el cliente de la venta
         Cliente cliente = clienteRepository.findById(venta.getCliente().getIdCliente()).orElse(null);
