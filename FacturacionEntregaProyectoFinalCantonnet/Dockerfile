@@ -1,5 +1,6 @@
 # Etapa 1: Compilación con Maven
-FROM maven:3.9.6-eclipse-temurin-17-slim AS build
+FFROM maven:3.9.6-eclipse-temurin-17 AS build
+
 
 WORKDIR /app
 
