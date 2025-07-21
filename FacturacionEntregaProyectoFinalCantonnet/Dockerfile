@@ -1,28 +1,20 @@
-# Usar imagen base de OpenJDK
-FROM openjdk:17-jdk-slim
+# Etapa 1: Compilación con Maven
+FROM maven:3.9.6-eclipse-temurin-17-slim AS build
 
-# Directorio de trabajo
 WORKDIR /app
 
-# Copiar archivos Maven wrapper y pom.xml
-COPY mvnw .
-COPY mvnw.cmd .
 COPY pom.xml .
+COPY src ./src
 
-# Dar permisos de ejecución al wrapper
-RUN chmod +x ./mvnw
+RUN mvn clean package -DskipTests
 
-# Descargar dependencias (para cache de Docker)
-RUN ./mvnw dependency:go-offline -B
+# Etapa 2: Imagen final liviana con solo el JAR
+FROM eclipse-temurin:17-jdk-alpine
 
-# Copiar código fuente
-COPY src src
+WORKDIR /app
 
-# Construir la aplicación
-RUN ./mvnw clean package -DskipTests
+COPY --from=build /app/target/*.jar app.jar
 
-# Exponer el puerto
 EXPOSE 8080
 
-# Comando para ejecutar la aplicación
-CMD ["java", "-jar", "target/*.jar"]
+CMD ["java", "-jar", "app.jar"]
