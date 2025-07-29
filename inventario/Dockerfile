@@ -1,33 +1,24 @@
-# Usar OpenJDK 17 como imagen base
-FROM openjdk:17-jdk-slim
+# Stage 1: Build
+FROM maven:3.8.6-openjdk-17-slim AS build
 
-# Establecer directorio de trabajo
 WORKDIR /app
 
-# Instalar Maven (por si no tienes mvnw)
-RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
-
-# Copiar archivos de configuración de Maven
+# Copiar pom.xml y descargar dependencias
 COPY pom.xml .
+RUN mvn dependency:go-offline -B
 
-# Copiar Maven Wrapper si existe
-COPY mvnw* ./
-COPY .mvn .mvn 2>/dev/null || echo "No .mvn directory found, using system maven"
-
-# Dar permisos de ejecución si mvnw existe
-RUN if [ -f "./mvnw" ]; then chmod +x ./mvnw; fi
-
-# Descargar dependencias (usar mvnw si existe, sino maven)
-RUN if [ -f "./mvnw" ]; then ./mvnw dependency:go-offline -B; else mvn dependency:go-offline -B; fi
-
-# Copiar código fuente
+# Copiar código fuente y construir
 COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Construir la aplicación (usar mvnw si existe, sino maven)
-RUN if [ -f "./mvnw" ]; then ./mvnw clean package -DskipTests; else mvn clean package -DskipTests; fi
+# Stage 2: Runtime
+FROM openjdk:17-jre-slim
 
-# Exponer puerto 8080
+WORKDIR /app
+
+# Copiar solo el JAR
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
 
-# Comando para ejecutar la aplicación
-CMD ["java", "-jar", "target/*.jar", "--spring.profiles.active=prod"]
+CMD ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]
