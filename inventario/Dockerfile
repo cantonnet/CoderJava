@@ -1,5 +1,5 @@
 # Dockerfile para proyecto con Lombok
-FROM openjdk:17-jdk-slim
+FROM openjdk:21-jdk-slim
 
 WORKDIR /app
 
