@@ -4,22 +4,27 @@ FROM openjdk:17-jdk-slim
 # Establecer directorio de trabajo
 WORKDIR /app
 
-# Copiar archivos de Maven
+# Instalar Maven (por si no tienes mvnw)
+RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
+
+# Copiar archivos de configuración de Maven
 COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
 
-# Dar permisos de ejecución a Maven Wrapper
-RUN chmod +x ./mvnw
+# Copiar Maven Wrapper si existe
+COPY mvnw* ./
+COPY .mvn .mvn 2>/dev/null || echo "No .mvn directory found, using system maven"
 
-# Descargar dependencias (para aprovechar cache de Docker)
-RUN ./mvnw dependency:go-offline -B
+# Dar permisos de ejecución si mvnw existe
+RUN if [ -f "./mvnw" ]; then chmod +x ./mvnw; fi
+
+# Descargar dependencias (usar mvnw si existe, sino maven)
+RUN if [ -f "./mvnw" ]; then ./mvnw dependency:go-offline -B; else mvn dependency:go-offline -B; fi
 
 # Copiar código fuente
 COPY src ./src
 
-# Construir la aplicación
-RUN ./mvnw clean package -DskipTests
+# Construir la aplicación (usar mvnw si existe, sino maven)
+RUN if [ -f "./mvnw" ]; then ./mvnw clean package -DskipTests; else mvn clean package -DskipTests; fi
 
 # Exponer puerto 8080
 EXPOSE 8080
