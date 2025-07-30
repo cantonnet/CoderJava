@@ -26,13 +26,30 @@ public class ProductoControlador {
     @Autowired
     private ProductoServicio productoServicio;
 
-    // Health check para Render
-    @GetMapping("/health")
-    public ResponseEntity<Map<String, String>> health() {
-        Map<String, String> status = new HashMap<>();
-        status.put("status", "UP");
-        status.put("service", "Inventario API");
-        return ResponseEntity.ok(status);
+    // Status check para Render
+    @GetMapping("/status")
+    public ResponseEntity<Map<String, Object>> status() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "UP");
+        response.put("service", "Inventario API");
+        response.put("timestamp", new java.util.Date());
+        response.put("endpoints", Map.of(
+            "GET /inventario-app/productos", "Obtener todos los productos",
+            "GET /inventario-app/productos/{id}", "Obtener producto por ID",
+            "POST /inventario-app/productos", "Crear nuevo producto",
+            "PUT /inventario-app/productos/{id}", "Actualizar producto existente",
+            "DELETE /inventario-app/productos/{id}", "Eliminar producto"
+        ));
+        response.put("tutorial", Map.of(
+            "base_url", "https://inventario-backend-vtiq.onrender.com",
+            "ejemplos", Map.of(
+                "Obtener productos", "GET /inventario-app/productos",
+                "Crear producto", "POST /inventario-app/productos con JSON: {\"descripcion\":\"Producto Test\",\"precio\":100.0,\"existencia\":10}",
+                "Actualizar producto", "PUT /inventario-app/productos/1 con JSON actualizado",
+                "Eliminar producto", "DELETE /inventario-app/productos/1"
+            )
+        ));
+        return ResponseEntity.ok(response);
     }
 
     // Listar todos los productos
